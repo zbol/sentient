@@ -1,0 +1,44 @@
+#sentient-ui-container {
+    width: 1000px;
+    height: 100%;
+    margin-left: -500px !important;
+    position: fixed;
+    left: 50%;
+    top: 0;
+    z-index: 9002;
+  display: none;
+}
+.open-modal-icon { 
+	width: 10px; 
+	fill: #111; 
+	margin-left: 8px;
+}
+.style-finder {
+	color: #111;
+	cursor: pointer;
+	font-family: 'brandon_bold', Helvetica, Arial, sans-serif !important;
+	font-size: 14px !important;
+}
+.style-finder:hover{
+	color: #e74c3c;
+}
+.style-finder:hover .open-modal-icon{
+	fill: #e74c3c; 
+}
+#pdp .style-finder {font-size: 14px;}
+#pdp #pdp-container #breadCrumbResults:before,
+.item.sentient-badge .compare {display:none;}
+
+@media screen and (max-width: 1175px) { 
+	.item .style-finder {
+		font-size: 12px !important;
+	}
+
+}
+
+@media screen and (max-width: 1050px) { 
+	.item .style-finder {
+		font-size: 10px !important;
+	}
+
+}
