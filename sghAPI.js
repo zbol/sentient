@@ -3,27 +3,19 @@
 
 (function() {
     
-    var e = {
-    	/* Your Global Var
-    	   To call - this.settings.yourVariableHere
-    	*/
-       catId:  'outstock',
-    };
-    var i = {
-        settings: e,
-        loadSentient: function() {
+        function loadSentient() {
             console.log('loadSentient()');
-            var obj = this;
+            var catId = 'outstock'
             var Sentient = window['Sentient'];
             var SentientCustomerUserSessionId = '';
             var addToCart = function (product, options, quantity) {
                 var id = product.spid
                 console.log('product.' + product.spid)
-                console.log('addToCart ' + obj.settings.catId)
-                console.log('STOCK: '+obj.settings.catId)
+                console.log('addToCart ' + catId)
+                console.log('STOCK: '+catId)
                 var promise = new Promise(function(resolve, reject) {
-                    if (obj.settings.catId != 'outstock'){
-                        var a = obj.settings.catId
+                    if (catId != 'outstock'){
+                        var a = catId
                         categoryDisplayJS.storeId = constants.ajaxParams.storeId, categoryDisplayJS.langId = constants.ajaxParams.langId, 
                         categoryDisplayJS.catalogId = constants.ajaxParams.catalogId, ServicesDeclarationJS.catentryId = a, 
                         categoryDisplayJS.AddItem2ShopCartAjax(a, 1);
@@ -50,15 +42,15 @@
             var goToCart = function () {
                 var closeExperience = false;
                 window.location.href='/OrderCalculate?calculationUsageId=-1&updatePrices=1&catalogId=10101&errorViewName=AjaxOrderItemDisplayView&orderId=.&langId=-1&storeId=10152&URL=AjaxOrderItemDisplayView'
-                console.log('closeExperience ' + obj.settings.catId)
+                console.log('closeExperience ' + catId)
                 return closeExperience;
             };
             var getDetails = function (product, options) {
-                
+            var mode = (eval("var __temp = null"), (typeof __temp === "undefined")) ? "strict":  "non-strict";
                 if (options != null) {
                     var api = '/webapp/wcs/stores/servlet/GetCatalogEntryDetailsByID?catalogId=10101&langId=-1&storeId=10152&productId='
                     var id = product.spid
-                    console.log('api: '+api)
+                   // console.log('api: '+api)
                     var promise = new Promise(function(resolve, reject) {
                         $('.ajax-loader-wrap, #ajax-container').hide();
                         window.jQuery.ajax(api+id, {
@@ -78,11 +70,10 @@
                                 var frameColor = ''
                                 var description = json.catalogEntry.description[0].longDescription
                                 var attribute = json.catalogEntryAttributes.attributes
-                                var catId = json.catalogEntry.catalogEntryIdentifier.uniqueID
                                 if (json.catalogEntry.inStock === true) {
-                                    obj.settings.catId = catId
+                                    catId = json.catalogEntry.catalogEntryIdentifier.uniqueID
                                 }else{
-                                    obj.settings.catId = 'outstock'
+                                    catId = 'outstock'
                                 }
                                 for (i = 0; i < attribute.length; i++) { 
                                     var name = attribute[i].name
@@ -120,7 +111,7 @@
                                         console.log('faceShapeArray '+faceShape.length)
                                         faceShape = getFaceShapeArray(faceShape)
                                     }
-                                    console.log('attr '+ name);
+                                    //console.log('attr '+ name);
                                 }
                                 description =   '<ul>'+
                                                 polarized+
@@ -156,8 +147,8 @@
                     return promise
                     
                 }else if (options) {
-                    console.log('options product : '+JSON.stringify(product))
-                    console.log('options options : '+JSON.stringify(options))
+                   // console.log('options product : '+JSON.stringify(product))
+                   // console.log('options options : '+JSON.stringify(options))
                     var price = options.width === 'N' ? '$70' : '$80';
                     return Promise.resolve({
                         price: price,
@@ -170,8 +161,8 @@
                         productDescription: 'Description of the glasses'
                     });
                 } else {
-                        console.log('getDetails product : '+JSON.stringify(product))
-                        console.log('getDetails options : '+JSON.stringify(options))
+                      //  console.log('getDetails product : '+JSON.stringify(product))
+                       // console.log('getDetails options : '+JSON.stringify(options))
                         return Promise.resolve({
                         price: '$'+product['sale_price'],
                         productName: product['product_id'],
@@ -184,8 +175,8 @@
                 
             };
             var getHeroImages = function (product, options) {
-                console.log('getDetails product : '+JSON.stringify(product))
-                console.log('getDetails options : '+JSON.stringify(options))
+               // console.log('getDetails product : '+JSON.stringify(product))
+               // console.log('getDetails options : '+JSON.stringify(options))
                 var id = product.spid  
                 return Promise.resolve([{
                         mainImage: 'http://s7d3.scene7.com/is/image/LuxotticaRetail/'+product.spid+'_shad_fr?$pdpSet$',
@@ -205,101 +196,13 @@
                     ]);
             };
             var getProductOptions = function (product, options) {
-                 console.log('product String: '+JSON.stringify(product))
-                 console.log('options String: '+JSON.stringify(options))
+                // console.log('product String: '+JSON.stringify(product))
+                // console.log('options String: '+JSON.stringify(options))
                 var api = '/webapp/wcs/stores/servlet/GetCatalogEntryDetailsByID?catalogId=10101&langId=-1&storeId=10152&productId='
                 var id = product.spid 
                 //console.log('product: '+product.spid)
                 var promise = new Promise(function(resolve, reject) {
-                    /* $('.ajax-loader-wrap, #ajax-container').hide();
-                     async: false,
-                        success: function(data) {
-                        var b = data.trim().replace("/*", "");
-                        b = b.replace("/", "");
-                        var json = JSON.parse(b);
-                        //var frameStyle = ''
-                        //var size = ''
-                        //var lensColor = ''
-                        //var faceShape = ''
-                        //var faceShapeArray = ''
-                        //var attribute = json.catalogEntryAttributes.attributes
-                        var catId = json.catalogEntry.catalogEntryIdentifier.uniqueID
-                        if (json.catalogEntry.inStock === true) {
-                            obj.settings.catId = catId
-                        }else{
-                            obj.settings.catId = 'outstock'
-                        }
-                        
-                        console.log('catId ' + obj.settings.catId)
-                        for (i = 0; i < attribute.length; i++) { 
-                            var name = attribute[i].name
-                            if ( name === 'Styles' ){
-                                frameStyle = json.catalogEntryAttributes.attributes[i].value.value
-                            }
-                            if ( name === 'Size' ){
-                                size = json.catalogEntryAttributes.attributes[i].value.value
-                            }
-                            if ( name === 'Lens Color' ){
-                                lensColor = json.catalogEntryAttributes.attributes[i].value.value
-                            }
-                            if ( name === 'Face Shape' ){
-                                faceShape = json.catalogEntryAttributes.attributes[i].values
-                                console.log('faceShapeArray '+faceShape.length)
-                                faceShape = getFaceShapeArray(faceShape)
-                            }
-                            //console.log('attr '+ name);
-                        }
-                        console.log('product( "success" ) '+ frameStyle );*/
                         resolve([])
-
-                            /*[
-                            {
-                                id: 'style',
-                                displayName: 'Frame Style',
-                                 emptyOptionLabel: "Please select size",
-                                selected: frameStyle || 'Black',
-                                emptyOptionLabel: false,
-                                values: [frameStyle],
-                                unavailable: [''],
-                                type: 'combo-select'
-                            }, {
-                                id: 'lensColor',
-                                displayName: 'Lens Color',
-                                 emptyOptionLabel: "Please select size",
-                                selected: lensColor || 'Black',
-                                emptyOptionLabel: false,
-                                values: [lensColor],
-                                unavailable: [''],
-                                type: 'combo-select'
-                            }, {
-                                id: 'faceShape',
-                                displayName: 'Face Shape',
-                                 emptyOptionLabel: "Please select size",
-                                selected: faceShape || 'Black',
-                                emptyOptionLabel: false,
-                                values: [faceShape],
-                                unavailable: [''],
-                                type: 'combo-select'
-                            }, {
-                                id: 'size',
-                                displayName: 'Size',
-                                 emptyOptionLabel: "Please select size",
-                                selected: size || 'Black',
-                                emptyOptionLabel: false,
-                                values: [size],
-                                unavailable: [''],
-                                type: 'combo-select'
-                            }
-                        ]);
-                      },
-                      complete: function(){
-                        $('.ajax-loader-wrap, #ajax-container').show();
-                    },
-                      error: function() {
-                        reject('Something went wrong');
-                        console.log( "error");
-                      }
-                    })*/
                 });
                 return promise
             };
@@ -341,8 +244,8 @@
                 console.error(e);
             });
 
-        },
-        setSeeds: function() {
+        }
+        function setSeeds() {
             var pageType = utag.data.page_type
             if(pageType == 'Search' || pageType == 'Catalog'){
                 $('.item.sentient-badge .compare')
@@ -358,7 +261,7 @@
                     var upc = String($parent.data('upc'));
                     Sentient.show(upc, 'sunglasses');
                     $.cookie("sentientSeed", "plp", {expires: 20, path: '/', domain: 'sunglasshut.com'});
-                    console.log('upc '+upc);
+                   // console.log('upc '+upc);
                 })
             }
             if(pageType == 'Product' && $('#pdp.sentient-badge').length){
@@ -382,10 +285,10 @@
             
 
 
-        },
-        sentientScript: function() {
+        }
+
+        function sentientScript() {
             var url = '//static.sentientawareapi.com/sunglass-hut/sentient-bootstrapper.min.js'
-            var obj = this
             $('.item.sentient-badge .compare').text('')
             $('.ajax-loader-wrap, #ajax-container').hide();
             window.jQuery.ajax(url, {
@@ -394,8 +297,9 @@
                     async: true,
                     crossDomain: true,
                     success: function(data) {
-                        obj.loadSentient()
-                        obj.setSeeds()
+                        setSeeds()
+                        loadSentient()
+                        
                         console.log('sentientawareapi.com' );
                     },
                     complete: function(){
@@ -405,13 +309,8 @@
                       console.log( "error");
                     }
                 })
-        },
-        init: function() {
-            return this.sentientScript(), this;
         }
-    };
-    window.sentientAPI = i;
+    sentientScript();
+})()
 
-}()), $(function() {
-     sentientAPI.init();
-});
+
