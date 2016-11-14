@@ -11,8 +11,8 @@
             var addToCart = function (product, options, quantity) {
                 var id = product.spid
                 console.log('product.' + product.spid)
-                console.log('addToCart ' + catId)
-                console.log('STOCK: '+catId)
+               // console.log('addToCart ' + catId)
+               // console.log('STOCK: '+catId)
                 var promise = new Promise(function(resolve, reject) {
                     if (catId != 'outstock'){
                         var a = catId
@@ -21,17 +21,17 @@
                         categoryDisplayJS.AddItem2ShopCartAjax(a, 1);
 
                         $(document).ajaxSend(function( AjaxOrderChangeServiceItemAdd, xhr, settings ) {
-                            console.log('url: '+settings.url)
-                            console.log('successHandler: '+settings.data)
+                          //  console.log('url: '+settings.url)
+                           // console.log('successHandler: '+settings.data)
                             if (settings.data.includes("orderItemId")){
                                 window.location.href='/OrderCalculate?calculationUsageId=-1&updatePrices=1&catalogId=10101&errorViewName=AjaxOrderItemDisplayView&orderId=.&langId=-1&storeId=10152&URL=AjaxOrderItemDisplayView'
-                                console.log('orderItemId');
+                               // console.log('orderItemId');
                             }
                             //console.log('settings '+ settings.url );
                         });
-                        
-                        resolve({upc: id})
-                            
+                       
+                        console.log(" id:"+ id)
+                        resolve(id)    
                     }else{
                         reject('Product is Out Of Stock')
                     }
@@ -46,7 +46,6 @@
                 return closeExperience;
             };
             var getDetails = function (product, options) {
-            var mode = (eval("var __temp = null"), (typeof __temp === "undefined")) ? "strict":  "non-strict";
                 if (options != null) {
                     var api = '/webapp/wcs/stores/servlet/GetCatalogEntryDetailsByID?catalogId=10101&langId=-1&storeId=10152&productId='
                     var id = product.spid
@@ -234,12 +233,11 @@
             Sentient.init(basicConfig, functionConfigurations, {
                 noIframe: true,
                 fields: ['sale_price', 'title', 'brand', 'price', 'product_id'],
-                useDomainForCookies: true
+                useDomainForCookies: true,
+                disableQuantitySelector:true,
+                strictMode: false
             }).then(function () {
                 console.info('LOADED');
-                /*setTimeout(function () {
-                    //Sentient.show('8053672131598', 'sunglasses');
-                }, 1000);*/
             }).catch(function (e) {
                 console.error(e);
             });
