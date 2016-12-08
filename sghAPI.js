@@ -24,6 +24,7 @@
                           //  console.log('url: '+settings.url)
                            // console.log('successHandler: '+settings.data)
                             if (settings.data.includes("orderItemId")){
+                                $.cookie("sentientCart", "addBag", {expires: 20, path: '/', domain: 'sunglasshut.com'});
                                 window.location.href='/OrderCalculate?calculationUsageId=-1&updatePrices=1&catalogId=10101&errorViewName=AjaxOrderItemDisplayView&orderId=.&langId=-1&storeId=10152&URL=AjaxOrderItemDisplayView'
                                // console.log('orderItemId');
                             }
@@ -47,6 +48,7 @@
             };
             var getDetails = function (product, options) {
                 if (options != null) {
+                    $.cookie("sentientGetDetails", "true", {expires: 20, path: '/', domain: 'sunglasshut.com'});
                     var api = '/webapp/wcs/stores/servlet/GetCatalogEntryDetailsByID?catalogId=10101&langId=-1&storeId=10152&productId='
                     var id = product.spid
                    // console.log('api: '+api)
