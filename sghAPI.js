@@ -247,6 +247,85 @@
         }
         function setSeeds() {
             var pageType = utag.data.page_type
+            var api = '/webapp/wcs/stores/servlet/GetCatalogEntryDetailsByID?catalogId=10101&langId=-1&storeId=10152&productId='
+            var apiFilter = ''
+            var filterDefinitions = [{
+                    id: "gender",
+                    displayName: "Gender",                                  
+                    multiselect: true,
+                    options: [
+                        {
+                            id: "men",
+                            displayName: "Men",
+                           aliases: ["men,women", "men", "women,men"]
+                        },{
+                            id: "women",
+                            displayName: "Women",
+                            aliases: ["men,women", "women", "women,men"]
+                        }
+                    ]
+                },
+                {
+                    id: "age_group",
+                    displayName: "Age Group",
+                    multiselect: true,
+                    options: [
+                        {
+                            id: "Adult",
+                            displayName: "Adult",
+                            aliases: ["Adult"]
+                        }, {
+                            id: "Kids",
+                            displayName: "Kids",
+                            aliases: ["Kids"]
+                        }
+                    ]
+                }]
+
+            function sghAPI(id) {
+                window.jQuery.ajax(api+id, {
+                    success: function(data) {
+                        var b = data.trim().replace("/*", "");
+                        b = b.replace("*/", "");
+                        var json = JSON.parse(b);
+                        var genderAll = ''
+                        var gender = []
+                        var description = json.catalogEntry.description[0].longDescription
+                        var attribute = json.catalogEntryAttributes.attributes
+                        if (json.catalogEntry.inStock === true) {
+                            catId = json.catalogEntry.catalogEntryIdentifier.uniqueID
+                        }else{
+                            catId = 'outstock'
+                        }
+                        for (i = 0; i < attribute.length; i++) { 
+                            var name = attribute[i].name
+                            if ( name === 'Gender' ){
+                                genderAll = json.catalogEntryAttributes.attributes[i].values
+                                for (j = 0; j < genderAll.length; j++) {
+                                  gender[j] =  genderAll[j].value
+                                 
+                                }
+                               
+                            }
+                        }
+                        gender = gender.toString()
+                        gender = gender.toLowerCase()
+                        console.log("gender: "+gender);
+                        var filterValues = [{ id: 'gender', 'values': [gender]}]
+                        Sentient.setFilter(filterValues, filterDefinitions)
+                        Sentient.show(id, 'sunglasses');
+                        //console.log("length: "+genderAll.length);                
+                    },
+                    complete: function(){
+                        $('.ajax-loader-wrap, #ajax-container').show();
+                    },
+                    error: function() {
+                        reject('Something went wrong');
+                        console.log( "error");
+                    }
+                })
+            }
+
             if(pageType == 'Search' || pageType == 'Catalog'){
                 $('.item.sentient-badge .compare')
                     .text('SEE SIMILAR STYLES')
@@ -259,12 +338,16 @@
                 $('.sentient-badge a.finder-seeded').on('click', function() {
                     var $parent = $(this).closest('.thumbnailWrap')
                     var upc = String($parent.data('upc'));
+                    
                     Sentient.show(upc, 'sunglasses');
+                    
                     $.cookie("sentientSeed", "plp", {expires: 20, path: '/', domain: 'sunglasshut.com'});
                    // console.log('upc '+upc);
                 })
             }
             if(pageType == 'Product' && $('#pdp.sentient-badge').length){
+                //var gender = utag.data.products["0"].category
+                //console.log('gender: '+gender)
                 $('#pdp.sentient-badge #breadCrumbResults').html('')
                 $(
                     $('<a/>')
@@ -275,20 +358,17 @@
 
                 $('.sentient-badge a.finder-seeded').on('click', function() {
                     var upc = String($('#pdp .upc').text());
-                    Sentient.show(upc, 'sunglasses');
+                    sghAPI(upc)
                     $.cookie("sentientSeed", "pdp", {expires: 20, path: '/', domain: 'sunglasshut.com'});
                     console.log('upc '+upc);
                 })
                 console.log('Product');
             }
-
-            
-
-
         }
 
         function sentientScript() {
             var url = '//static.sentientawareapi.com/sunglass-hut/sentient-bootstrapper.min.js'
+            //var url = '//static.sentientawareapi.com/1.1.1/sunglass-hut/sentient-bootstrapper.min.js'
             $('.item.sentient-badge .compare').text('')
             $('.ajax-loader-wrap, #ajax-container').hide();
             window.jQuery.ajax(url, {
